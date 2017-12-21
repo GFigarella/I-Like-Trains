@@ -1,14 +1,15 @@
 $(document).ready(function(){
     // Initialize Firebase
-  var config = {
-    apiKey: "AIzaSyBPbC37ybEKLLfnTDa79E_speeKfVBegBk",
-    authDomain: "train-time-3f044.firebaseapp.com",
-    databaseURL: "https://train-time-3f044.firebaseio.com",
-    projectId: "train-time-3f044",
-    storageBucket: "train-time-3f044.appspot.com",
-    messagingSenderId: "356705036768"
-  };
-  firebase.initializeApp(config);
+    var config = {
+        apiKey: "AIzaSyDT8AN2z7Q2RlLg19sDQC3ADY7SitD3FXA",
+        authDomain: "the-a-train.firebaseapp.com",
+        databaseURL: "https://the-a-train.firebaseio.com",
+        projectId: "the-a-train",
+        storageBucket: "",
+        messagingSenderId: "394794933480"
+        };
+        
+    firebase.initializeApp(config);
 
   // declare var database = ... 
   database = firebase.database();
@@ -19,6 +20,10 @@ $(document).ready(function(){
     var firstTime = "";
     var nextArrival = "";
     var minutesAway = "";
+    var diffTime = "";
+    var firstTimeConverted = "";
+    var tRemainder = "";
+    
 
     $("#submitbtn").on('click', function(){
         // prevents overwriting 
@@ -29,6 +34,12 @@ $(document).ready(function(){
         destination = $("#destination").val().trim();
         frequency = $("#frequency").val().trim();
         firstTime = $("#firstTime").val().trim();
+        firstTimeConverted = moment(firstTime, "hh:mm").subtract(1, "years");
+        diffTime = moment().diff(moment(firstTimeConverted), "minutes");
+        tRemainder = diffTime % frequency;
+        
+
+
 
         console.log("name: " + name);
         console.log("destination: " + destination);
@@ -63,6 +74,8 @@ $(document).ready(function(){
         var tRemainder = diffTime % frequency;
         console.log(tRemainder);
 
+        console.log((moment().diff(moment(moment(firstTime, "hh:mm").subtract(1, "years")), "minutes") % frequency) + " test");
+
         // Minute Until Train
         var tMinutesTillTrain = frequency - tRemainder;
         console.log("MINUTES TILL TRAIN: " + tMinutesTillTrain);
@@ -73,7 +86,7 @@ $(document).ready(function(){
         
 
         // This acts as a for loop, so for each 'childSnapshot', we're gonna add the info below in a new table row, or <td> 
-        $("#table").append("<tr>" + "<td>" + childSnapshot.val().name + "</td>" + "<td>" + childSnapshot.val().destination + "</td>" + "<td>" + childSnapshot.val().frequency + "<td>" + moment(nextTrain).format("hh:mm")  + "</td>" + "<td>" + tMinutesTillTrain + "</td>" + "</tr>");
+        $("#table").append("<tr>" + "<td>" + childSnapshot.val().name + "</td>" + "<td>" + childSnapshot.val().destination + "</td>" + "<td>" + childSnapshot.val().frequency + "<td>" + moment(nextTrain).format("hh:mm")  + "</td>" + "<td>" + tRemainder + "</td>" + "</tr>");
     }, function(errorObject){
         console.log("Errors handled: " + errorObject.code);
     })
