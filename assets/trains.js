@@ -33,7 +33,7 @@ $(document).ready(function(){
         console.log("name: " + name);
         console.log("destination: " + destination);
         console.log("frequency: " + frequency);
-        console.log("first train: " + first);
+        console.log("first train: " + firstTime + ", " + typeof(firstTime));
 
         database.ref().push({
             name: name,
@@ -45,25 +45,38 @@ $(document).ready(function(){
     });
 
 
-        database.ref().on('child_added', function(childSnapshot){
-            //Log info coming out of snapshot
-            // console.log(childSnapshot.val().name);
-            // console.log(childSnapshot.val().role);
-            // console.log(childSnapshot.val().date);
-            // console.log(childSnapshot.val().rate);
+    database.ref().on('child_added', function(childSnapshot){
 
-            // this was all gotten from the moment js website
-            var a = moment(); // this stores the current time in a variable
-            var b = moment(childSnapshot.val().date); // this stores the date from childSnapshot to a variable
-            var months = a.diff(b, 'months'); // subtracts childSnapshot from a, and calculates it in months. 
-            console.log(months);
+        // First Time (pushed back 1 year to make sure it comes before current time)
+        var firstTimeConverted = moment(firstTime, "hh:mm").subtract(1, "years");
+        console.log(firstTimeConverted);
 
+        // Current Time
+        var currentTime = moment();
+        console.log("CURRENT TIME: " + moment(currentTime).format("hh:mm"));
 
-            // This acts as a for loop, so for each 'childSnapshot', we're gonna add the info below in a new table row, or <td> 
-            $("#table").append("<tr>" + "<td>" + childSnapshot.val().name + "</td>" + "<td>" + childSnapshot.val().role + "</td>" + "<td>" + childSnapshot.val().date + "<td>" + months + " months" + "</td>" + "<td>" + childSnapshot.val().rate + "</td>" + "<td>" + months * childSnapshot.val().rate + "</td>" + "</tr>");
-        }, function(errorObject){
-            console.log("Errors handled: " + errorObject.code);
-        })
+        // Difference between the times
+        var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
+        console.log("DIFFERENCE IN TIME: " + diffTime);
+
+        // Time apart (remainder)
+        var tRemainder = diffTime % frequency;
+        console.log(tRemainder);
+
+        // Minute Until Train
+        var tMinutesTillTrain = frequency - tRemainder;
+        console.log("MINUTES TILL TRAIN: " + tMinutesTillTrain);
+
+        // Next Train
+        var nextTrain = moment().add(tMinutesTillTrain, "minutes");
+        console.log("ARRIVAL TIME: " + moment(nextTrain).format("hh:mm"));
+        
+
+        // This acts as a for loop, so for each 'childSnapshot', we're gonna add the info below in a new table row, or <td> 
+        $("#table").append("<tr>" + "<td>" + childSnapshot.val().name + "</td>" + "<td>" + childSnapshot.val().destination + "</td>" + "<td>" + childSnapshot.val().frequency + "<td>" + moment(nextTrain).format("hh:mm")  + "</td>" + "<td>" + tMinutesTillTrain + "</td>" + "</tr>");
+    }, function(errorObject){
+        console.log("Errors handled: " + errorObject.code);
+    })
 
 
 
