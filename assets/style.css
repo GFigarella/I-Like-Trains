@@ -1,0 +1,28 @@
+body{
+    padding-top: 20px;
+    background-image: url("train-image.jpg");
+    font-family: 'Verdana', sans-serif, Geneva;
+}
+
+.jumbotron{
+    background-image: url("A-Train.jpg");
+    background-position: 0px -550px;
+    background-repeat: no-repeat;
+    background-size: 150%;
+    text-align: center;
+    color: rgb(255, 255, 255);
+    text-shadow: 5px 4px 5px rgb(40, 27, 53);
+    box-shadow: 5px 5px rgb(53, 42, 71);
+    border: 1px solid white;
+}
+
+#currentTrain, #addTrain{
+    color: white;
+    background-color: rgb(53, 42, 71);
+    font-size: 18px;
+}
+
+.panel {
+    box-shadow: 5px 5px rgb(53, 42, 71);
+    border: 1px solid white;
+}
